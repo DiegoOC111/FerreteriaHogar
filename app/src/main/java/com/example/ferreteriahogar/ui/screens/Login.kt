@@ -39,8 +39,10 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    var passwordHashed by remember {mutableStateOf("") }
     var emailError by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
+    var loginError by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -104,8 +106,8 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
                             .fillMaxWidth()
                             .padding(vertical = 4.dp),
                         colors = TextFieldDefaults.colors(
-                            focusedIndicatorColor =  colorResource(id = R.color.VERD_FONDO),
-                            unfocusedIndicatorColor =  colorResource(id = R.color.VERD_FONDO),
+                            focusedIndicatorColor =  Color.Transparent,
+                            unfocusedIndicatorColor =  Color.Transparent,
                             focusedContainerColor =  colorResource(id = R.color.VERD_FONDO),
                             unfocusedContainerColor =  colorResource(id = R.color.VERD_FONDO)
                         ),
@@ -150,8 +152,8 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
                             .fillMaxWidth()
                             .padding(vertical = 4.dp),
                         colors = TextFieldDefaults.colors(
-                            focusedIndicatorColor =  colorResource(id = R.color.VERD_FONDO),
-                            unfocusedIndicatorColor =  colorResource(id = R.color.VERD_FONDO),
+                            focusedIndicatorColor =  Color.Transparent,
+                            unfocusedIndicatorColor =  Color.Transparent,
                             focusedContainerColor =  colorResource(id = R.color.VERD_FONDO),
                             unfocusedContainerColor =  colorResource(id = R.color.VERD_FONDO)
                         ),
