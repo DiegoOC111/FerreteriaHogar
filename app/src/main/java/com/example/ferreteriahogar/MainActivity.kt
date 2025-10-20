@@ -32,10 +32,16 @@ class MainActivity : ComponentActivity() {
                         Login(paddingValues = innerPadding, navController)
                     }
                 }
-                composable(Routes.MainMenu+"/{user}",){
+                composable(Routes.MainMenu+"/{user}"+"/{passwordHashed}",){
                     val user = it.arguments?.getString("user")
+                    val passwordHashed = it.arguments?.getString("passwordHashed")
                     Scaffold(Modifier.fillMaxSize()) { innerPadding ->
-                        MainMenu(paddingValues = innerPadding, user?:"Error")
+                        MainMenu(paddingValues = innerPadding, user?:"Error", passwordHashed?:"No" , navController)
+                    }
+                }
+                composable(Routes.Inventory,){
+                    Scaffold(Modifier.fillMaxSize()) { innerPadding ->
+                        Inventory(paddingValues = innerPadding, navController)
                     }
                 }
             })

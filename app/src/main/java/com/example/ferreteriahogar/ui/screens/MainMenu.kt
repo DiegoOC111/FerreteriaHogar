@@ -29,11 +29,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.ferreteriahogar.ui.Routes
+import com.example.ferreteriahogar.ui.components.BackIconButton
+import com.example.ferreteriahogar.ui.components.NavBar
 import org.w3c.dom.Text
 
 @Composable
-fun MainMenu(paddingValues: PaddingValues, usuario : String){
+fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : String , navController : NavController){
+    val titleNavBar = ""
 
     Box(
         modifier = Modifier
@@ -42,11 +47,13 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String){
                 brush = Brush.verticalGradient(
                     colors = listOf(
                         Color.White,
-                        Color.LightGray
+                        Color.White
                     )
                 )
             )
     )
+
+    NavBar(navController, titleNavBar)
 
     Column (
         modifier = Modifier
@@ -54,7 +61,8 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String){
             .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Spacer(Modifier.height(60.dp))
+
+        Spacer(Modifier.height(90.dp))
 
         Text(text = "Bienvenido, $usuario!",
             style = TextStyle(
@@ -72,7 +80,7 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String){
 
         Button(
             onClick = {
-
+                navController.navigate(Routes.Inventory)
             },
             Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
             shape = RoundedCornerShape(25.dp),
@@ -85,7 +93,7 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String){
                 Color.White
             )
         ) {
-            Text(text = "Centro de etiquetas",
+            Text(text = "Centro de Inventario",
                 style = TextStyle(
                     fontSize = 21.sp
                 )
@@ -98,6 +106,8 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String){
 fun MAIN() {
     MainMenu(
         paddingValues = PaddingValues(),
-        usuario = "Diego"
+        usuario = "Villalobos",
+        passwordHashed = "abc123123abc",
+        navController = rememberNavController()
     )
 }
