@@ -7,6 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="ICON_BG">#F8F8ED</color>
     <color name="OBS_1">#6C584D</color>
     <color name="OBS_CLA">#A98467</color>
     <color name="VERD_FUER">#A9BF73</color>

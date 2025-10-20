@@ -122,7 +122,9 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
                                 focusedIndicatorColor =  Color.Transparent,
                                 unfocusedIndicatorColor =  Color.Transparent,
                                 focusedContainerColor =  colorResource(id = R.color.VERD_FONDO),
-                                unfocusedContainerColor =  colorResource(id = R.color.VERD_FONDO)
+                                unfocusedContainerColor =  colorResource(id = R.color.VERD_FONDO),
+                                focusedLabelColor = Color.Black,
+                                unfocusedLabelColor = Color.Black,
                             ),
                             supportingText = {
                                 Row(
@@ -168,7 +170,9 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
                                 focusedIndicatorColor =  Color.Transparent,
                                 unfocusedIndicatorColor =  Color.Transparent,
                                 focusedContainerColor =  colorResource(id = R.color.VERD_FONDO),
-                                unfocusedContainerColor =  colorResource(id = R.color.VERD_FONDO)
+                                unfocusedContainerColor =  colorResource(id = R.color.VERD_FONDO),
+                                focusedLabelColor = Color.Black,
+                                unfocusedLabelColor = Color.Black,
                             ),
                             supportingText = {
                                 Row(
@@ -206,7 +210,6 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
                                     if (user != null){
                                         passwordHashed = sha256(password)
                                         println("Contraseña bruta: $password")
-                                        println("Contraseña cifrada: $passwordHashed")
 
                                         navController.navigate(Routes.MainMenu+"/${user.user}"+"/${passwordHashed}")
                                     }else {
