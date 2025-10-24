@@ -13,15 +13,26 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.ferreteriahogar.ui.Routes
 import com.example.ferreteriahogar.ui.screens.*
 import com.example.ferreteriahogar.ui.theme.FerreteriaHogarTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+        var keepSplashOnScreen = true
+        splashScreen.setKeepOnScreenCondition { keepSplashOnScreen }
+        lifecycleScope.launch {
+            delay(1500)
+            keepSplashOnScreen = false
+        }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -32,10 +43,16 @@ class MainActivity : ComponentActivity() {
                         Login(paddingValues = innerPadding, navController)
                     }
                 }
-                composable(Routes.MainMenu+"/{user}",){
+                composable(Routes.MainMenu+"/{user}"+"/{passwordHashed}",){
                     val user = it.arguments?.getString("user")
+                    val passwordHashed = it.arguments?.getString("passwordHashed")
                     Scaffold(Modifier.fillMaxSize()) { innerPadding ->
-                        MainMenu(paddingValues = innerPadding, user?:"Error")
+                        MainMenu(paddingValues = innerPadding, user?:"Error", passwordHashed?:"No" , navController)
+                    }
+                }
+                composable(Routes.Inventory,){
+                    Scaffold(Modifier.fillMaxSize()) { innerPadding ->
+                        Inventory(paddingValues = innerPadding, navController)
                     }
                 }
             })

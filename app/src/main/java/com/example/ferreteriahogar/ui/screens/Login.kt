@@ -31,6 +31,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.ferreteriahogar.R
 import com.example.ferreteriahogar.ui.Routes
 import androidx.compose.ui.res.colorResource
+import com.example.ferreteriahogar.data.accounts
+import com.example.ferreteriahogar.utils.sha256
+
 @Composable
 
 
@@ -77,158 +80,194 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
             )
 
             // ======= CONTENEDOR DE LOS INPUTS =======
-            Box(
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-                    .background(
-                        color = colorResource(id = R.color.VERD_FUER),
-                        shape = RoundedCornerShape(20.dp)
-                    )
-                    .padding(vertical = 25.dp, horizontal = 16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
-                    // =========== CAMPO EMAIL ===========
-                    TextField(
-                        value = email,
-                        onValueChange = {
-                            if (it.length <= 25) email = it
-                        },
-                        label = { Text("Nombre") },
-                        leadingIcon = {
-                            Icon(Icons.Rounded.AccountCircle, contentDescription = "")
-                        },
-                        singleLine = true,
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp),
-                        colors = TextFieldDefaults.colors(
-                            focusedIndicatorColor =  Color.Transparent,
-                            unfocusedIndicatorColor =  Color.Transparent,
-                            focusedContainerColor =  colorResource(id = R.color.VERD_FONDO),
-                            unfocusedContainerColor =  colorResource(id = R.color.VERD_FONDO)
-                        ),
-                        supportingText = {
-                            Row(
-                                Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                if (emailError.isNotEmpty()) {
-                                    Text(
-                                        text = emailError,
-                                        color = Color.Red,
-                                        fontSize = 13.sp,
-                                    )
-                                }
-                                Text(
-                                    text = "${email.length} / 25",
-                                    textAlign = TextAlign.End,
-                                    fontSize = 13.sp
-                                )
-                            }
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(40.dp))
-
-                    // =========== CAMPO PASSWORD ===========
-                    TextField(
-                        value = password,
-                        onValueChange = {
-                            if (it.length <= 65) password = it
-                        },
-                        label = { Text("Contraseña") },
-                        leadingIcon = {
-                            Icon(Icons.Rounded.Lock, contentDescription = "")
-                        },
-                        visualTransformation = if (passwordVisible)
-                            VisualTransformation.None else PasswordVisualTransformation(),
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp),
-                        colors = TextFieldDefaults.colors(
-                            focusedIndicatorColor =  Color.Transparent,
-                            unfocusedIndicatorColor =  Color.Transparent,
-                            focusedContainerColor =  colorResource(id = R.color.VERD_FONDO),
-                            unfocusedContainerColor =  colorResource(id = R.color.VERD_FONDO)
-                        ),
-                        supportingText = {
-                            Row(
-                                Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                if (passwordError.isNotEmpty()) {
-                                    Text(
-                                        text = passwordError,
-                                        color = Color.Red,
-                                        fontSize = 13.sp,
-                                    )
-                                }
-                                Text(
-                                    text = "${password.length} / 65",
-                                    textAlign = TextAlign.End,
-                                    fontSize = 13.sp
-                                )
-                            }
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(40.dp))
-
-
-                    // =========== BOTÓN LOGIN ===========
-                    Button(
-                        onClick = {
-                            emailError = if (email.isBlank()) "Nombre no puede estar vacío" else ""
-                            passwordError =
-                                if (password.isBlank()) "Contraseña no puede estar vacía" else ""
-                            if (emailError.isEmpty() && passwordError.isEmpty()) {
-                                navController.navigate(Routes.MainMenu + "/${email}")
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth(0.7f)
-                            .height(50.dp),
-                        shape = RoundedCornerShape(25.dp),
-                        elevation = ButtonDefaults.buttonElevation(
-                            defaultElevation = 4.dp,
-                            pressedElevation = 8.dp
-                        ),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Black,
-                            contentColor = Color.White
+                    .padding(horizontal = 20.dp),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = colorResource(id = R.color.VERD_FUER)
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            ){
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .background(
+                            color = colorResource(id = R.color.VERD_FUER),
+                            shape = RoundedCornerShape(20.dp)
                         )
-                    ) {
-                        Text(
-                            text = "Ingresar",
-                            style = TextStyle(
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.SemiBold
+                        .padding(vertical = 25.dp, horizontal = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+                        // =========== CAMPO EMAIL ===========
+                        TextField(
+                            value = email,
+                            onValueChange = {
+                                if (it.length <= 25) email = it
+                            },
+                            label = { Text("Nombre") },
+                            leadingIcon = {
+                                Icon(Icons.Rounded.AccountCircle, contentDescription = "")
+                            },
+                            singleLine = true,
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            colors = TextFieldDefaults.colors(
+                                focusedIndicatorColor =  Color.Transparent,
+                                unfocusedIndicatorColor =  Color.Transparent,
+                                focusedContainerColor =  colorResource(id = R.color.VERD_FONDO),
+                                unfocusedContainerColor =  colorResource(id = R.color.VERD_FONDO),
+                                focusedLabelColor = Color.Black,
+                                unfocusedLabelColor = Color.Black,
+                            ),
+                            supportingText = {
+                                Row(
+                                    Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    if (emailError.isNotEmpty()) {
+                                        Text(
+                                            text = emailError,
+                                            color = Color.Red,
+                                            fontSize = 13.sp,
+                                        )
+                                    }
+                                    Text(
+                                        text = "${email.length} / 25",
+                                        textAlign = TextAlign.End,
+                                        fontSize = 13.sp
+                                    )
+                                }
+                            }
+                        )
+
+                        Spacer(modifier = Modifier.height(40.dp))
+
+                        // =========== CAMPO PASSWORD ===========
+                        TextField(
+                            value = password,
+                            onValueChange = {
+                                if (it.length <= 65) password = it
+                            },
+                            label = { Text("Contraseña") },
+                            leadingIcon = {
+                                Icon(Icons.Rounded.Lock, contentDescription = "")
+                            },
+                            visualTransformation = if (passwordVisible)
+                                VisualTransformation.None else PasswordVisualTransformation(),
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            colors = TextFieldDefaults.colors(
+                                focusedIndicatorColor =  Color.Transparent,
+                                unfocusedIndicatorColor =  Color.Transparent,
+                                focusedContainerColor =  colorResource(id = R.color.VERD_FONDO),
+                                unfocusedContainerColor =  colorResource(id = R.color.VERD_FONDO),
+                                focusedLabelColor = Color.Black,
+                                unfocusedLabelColor = Color.Black,
+                            ),
+                            supportingText = {
+                                Row(
+                                    Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    if (passwordError.isNotEmpty()) {
+                                        Text(
+                                            text = passwordError,
+                                            color = Color.Red,
+                                            fontSize = 13.sp,
+                                        )
+                                    }
+                                    Text(
+                                        text = "${password.length} / 65",
+                                        textAlign = TextAlign.End,
+                                        fontSize = 13.sp
+                                    )
+                                }
+                            }
+                        )
+
+                        Spacer(modifier = Modifier.height(40.dp))
+
+
+                        // =========== BOTÓN LOGIN ===========
+                        Button(
+                            onClick = {
+                                emailError = if (email.isBlank()) "Nombre no puede estar vacio" else ""
+                                passwordError = if (password.isBlank()) "Contraseña no puede estar vacia" else ""
+                                if (emailError.isEmpty() && passwordError.isEmpty()){
+                                    val user = accounts.find {it.user == email && it.password == password}
+
+                                    if (user != null){
+                                        passwordHashed = sha256(password)
+                                        println("Contraseña bruta: $password")
+
+                                        navController.navigate(Routes.MainMenu+"/${user.user}"+"/${passwordHashed}")
+                                    }else {
+                                        loginError = "El usuario o contraseña no coinciden"
+                                    }
+
+                                }
+
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f)
+                                .height(50.dp),
+                            shape = RoundedCornerShape(25.dp),
+                            elevation = ButtonDefaults.buttonElevation(
+                                defaultElevation = 4.dp,
+                                pressedElevation = 8.dp
+                            ),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF3C3A3A),
+                                contentColor = Color.White
                             )
+                        ) {
+                            Text(
+                                text = "Ingresar",
+                                style = TextStyle(
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            )
+                        }
+
+                        if (loginError.isNotEmpty()){
+                            Text(
+                                text = loginError,
+                                color = Color.Red,
+                                fontSize = 16.sp,
+                                modifier = Modifier.padding(top = 17.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // =========== TEXTO "OLVIDASTE CONTRASEÑA" ===========
+                        Text(
+                            text = "¿Olvidaste la contraseña?",
+                            color = Color.Black,
+                            modifier = Modifier.clickable {
+                                // Lógica para recuperar contraseña
+                            },
+                            fontSize = 16.sp
                         )
+
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // =========== TEXTO "OLVIDASTE CONTRASEÑA" ===========
-                    Text(
-                        text = "¿Olvidaste la contraseña?",
-                        color = Color.Black,
-                        modifier = Modifier.clickable {
-                            // Lógica para recuperar contraseña
-                        },
-                        fontSize = 16.sp
-                    )
-
                 }
-
             }
+
+
 
         }
         Image(

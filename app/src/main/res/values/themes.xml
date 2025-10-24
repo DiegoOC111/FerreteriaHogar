@@ -2,4 +2,9 @@
 <resources>
 
     <style name="Theme.FerreteriaHogar" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.FerreteriaHogar.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/ICON_BG</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/icon_fh_round</item>
+        <item name="postSplashScreenTheme">@style/Theme.FerreteriaHogar</item>
+    </style>
 </resources>
