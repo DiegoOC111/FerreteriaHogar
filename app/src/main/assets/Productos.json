@@ -1,0 +1,5 @@
+[
+  { "codigo": "123456", "descripcion": "Martillo de acero" },
+  { "codigo": "654321", "descripcion": "Destornillador plano" },
+  { "codigo": "987654", "descripcion": "Taladro inalámbrico" }
+]

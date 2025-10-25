@@ -74,9 +74,10 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
                 modifier = Modifier
 
                     .width(500.dp)
+                    .height(150.dp)
                     .fillMaxWidth()
                     .padding(horizontal = 40.dp, vertical = 20.dp),
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.FillWidth
             )
 
             // ======= CONTENEDOR DE LOS INPUTS =======
@@ -277,8 +278,8 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
                 .align(Alignment.BottomCenter)
                 .height(200.dp)
                 .fillMaxWidth()
-                .padding(horizontal = 40.dp, vertical = 20.dp),
-            contentScale = ContentScale.Fit
+                .padding(horizontal = 40.dp),
+            contentScale = ContentScale.FillBounds
         )
     }
 

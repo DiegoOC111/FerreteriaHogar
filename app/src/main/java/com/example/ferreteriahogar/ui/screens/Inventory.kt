@@ -41,7 +41,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.ferreteriahogar.R
+import com.example.ferreteriahogar.data.Globals
 import com.example.ferreteriahogar.data.Inventory
+import com.example.ferreteriahogar.ui.Routes
 import com.example.ferreteriahogar.ui.components.BackIconButton
 import com.example.ferreteriahogar.ui.components.InventorySelect
 import com.example.ferreteriahogar.ui.components.NavBar
@@ -49,11 +51,10 @@ import com.example.ferreteriahogar.ui.theme.VERD_FUER
 import com.example.ferreteriahogar.ui.theme.VERD_MEDIO
 
 @Composable
-fun Inventory(paddingValues: PaddingValues, navController: NavController){
+fun Inventory(paddingValues: PaddingValues, navController: NavController) {
     val titleNavBar = "Inventario"
     var selectedInventory by remember { mutableStateOf<Inventory?>(null) }
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
@@ -63,157 +64,92 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController){
                         colorResource(id = R.color.VERD_FONDO)
                     )
                 )
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
+            )
     ) {
-
-        NavBar(navController, titleNavBar)
-
-        Spacer(Modifier.height(20.dp))
-
-        Text(
-            text = "Inventario",
-            style = TextStyle(
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.DarkGray
-            ),
-            modifier = Modifier.padding(end=240.dp, bottom = 6.dp)
-        )
-
-        InventorySelect(selectedInventory = selectedInventory, onInventorySelected = {selectedInventory = it})
-
-        Spacer(Modifier.height(40.dp))
-
-        Text(
-            text = "Detalles del Inventario",
-            style = TextStyle(
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.DarkGray
-            ),
-            modifier = Modifier.padding(end=134.dp, bottom = 6.dp)
-        )
-
-        Card(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
-            shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color(0xFFCFE0B3)
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
-        ){
-            Box(
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.White,
+                            colorResource(id = R.color.VERD_FONDO)
+                        )
+                    )
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            NavBar(navController, titleNavBar)
+
+            Spacer(Modifier.height(20.dp))
+
+            Text(
+                text = "Inventario",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.DarkGray
+                ),
+                modifier = Modifier.padding(end = 240.dp, bottom = 6.dp)
+            )
+
+            InventorySelect(
+                selectedInventory = selectedInventory,
+                onInventorySelected = { selectedInventory = it })
+
+            Spacer(Modifier.height(40.dp))
+
+            Text(
+                text = "Detalles del Inventario",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.DarkGray
+                ),
+                modifier = Modifier.padding(end = 134.dp, bottom = 6.dp)
+            )
+
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-                    .background(
-                        color = Color(0xFFCFE0B3),
-                        shape = RoundedCornerShape(20.dp)
-                    )
-                    .padding(vertical = 25.dp, horizontal = 16.dp),
-                contentAlignment = Alignment.Center
-            ){
-                if (selectedInventory != null) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.Start
-                    ) {
+                    .padding(horizontal = 20.dp),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFFCFE0B3)
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .background(
+                            color = Color(0xFFCFE0B3),
+                            shape = RoundedCornerShape(20.dp)
+                        )
+                        .padding(vertical = 25.dp, horizontal = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (selectedInventory != null) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.Start
+                        ) {
 
-                        Column {
-                            Text(
-                                text = "ID:",
-                                modifier = Modifier.padding(bottom = 0.dp),
-                                style = TextStyle(
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.W400,
-                                    color = Color.DarkGray
-                                )
-                            )
-                            Text(
-                                text = "${selectedInventory!!.codigo}",
-                                modifier = Modifier.padding(bottom = 15.dp),
-                                style = TextStyle(
-                                    fontSize = 22.sp,
-                                    fontWeight = FontWeight.W500,
-                                    color = Color.DarkGray
-                                )
-                            )
-                        }
-
-                        Column {
-                            Text(
-                                text = "NOMBRE:",
-                                modifier = Modifier.padding(bottom = 0.dp),
-                                style = TextStyle(
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.W400,
-                                    color = Color.DarkGray
-                                )
-                            )
-                            Text(
-                                text = "${selectedInventory!!.nombre}",
-                                modifier = Modifier.padding(bottom = 15.dp),
-                                style = TextStyle(
-                                    fontSize = 22.sp,
-                                    fontWeight = FontWeight.W500,
-                                    color = Color.DarkGray
-                                )
-                            )
-                        }
-
-                        Column {
-                            Text(
-                                text = "FUNCIONARIO:",
-                                modifier = Modifier.padding(bottom = 0.dp),
-                                style = TextStyle(
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.W400,
-                                    color = Color.DarkGray
-                                )
-                            )
-                            Text(
-                                text = "${selectedInventory!!.funcionario}",
-                                modifier = Modifier.padding(bottom = 15.dp),
-                                style = TextStyle(
-                                    fontSize = 22.sp,
-                                    fontWeight = FontWeight.W500,
-                                    color = Color.DarkGray
-                                )
-                            )
-                        }
-                        Column {
-                            Text(
-                                text = "ESTADO:",
-                                modifier = Modifier.padding(bottom = 0.dp),
-                                style = TextStyle(
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.W400,
-                                    color = Color.DarkGray
-                                )
-                            )
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(bottom = 15.dp)
-                            ) {
-                                val colorEstado = if (selectedInventory?.activo == true)
-                                    Color(0xFF4CAF50)
-                                else
-                                    Color(0xFFF44336)
-
-                                Box(
-                                    modifier = Modifier
-                                        .size(16.dp)
-                                        .background(colorEstado, shape = CircleShape)
-                                        .border(1.dp, Color.DarkGray.copy(alpha = 0.4f), CircleShape)
-                                )
-
-                                Spacer(modifier = Modifier.width(8.dp))
-
+                            Column {
                                 Text(
-                                    text = if (selectedInventory?.activo == true) "Activo" else "Inactivo",
+                                    text = "ID:",
+                                    modifier = Modifier.padding(bottom = 0.dp),
+                                    style = TextStyle(
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.W400,
+                                        color = Color.DarkGray
+                                    )
+                                )
+                                Text(
+                                    text = "${selectedInventory!!.codigo}",
+                                    modifier = Modifier.padding(bottom = 15.dp),
                                     style = TextStyle(
                                         fontSize = 22.sp,
                                         fontWeight = FontWeight.W500,
@@ -221,54 +157,153 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController){
                                     )
                                 )
                             }
+
+                            Column {
+                                Text(
+                                    text = "NOMBRE:",
+                                    modifier = Modifier.padding(bottom = 0.dp),
+                                    style = TextStyle(
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.W400,
+                                        color = Color.DarkGray
+                                    )
+                                )
+                                Text(
+                                    text = "${selectedInventory!!.nombre}",
+                                    modifier = Modifier.padding(bottom = 15.dp),
+                                    style = TextStyle(
+                                        fontSize = 22.sp,
+                                        fontWeight = FontWeight.W500,
+                                        color = Color.DarkGray
+                                    )
+                                )
+                            }
+
+                            Column {
+                                Text(
+                                    text = "FUNCIONARIO:",
+                                    modifier = Modifier.padding(bottom = 0.dp),
+                                    style = TextStyle(
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.W400,
+                                        color = Color.DarkGray
+                                    )
+                                )
+                                Text(
+                                    text = "${selectedInventory!!.funcionario}",
+                                    modifier = Modifier.padding(bottom = 15.dp),
+                                    style = TextStyle(
+                                        fontSize = 22.sp,
+                                        fontWeight = FontWeight.W500,
+                                        color = Color.DarkGray
+                                    )
+                                )
+                            }
+                            Column {
+                                Text(
+                                    text = "ESTADO:",
+                                    modifier = Modifier.padding(bottom = 0.dp),
+                                    style = TextStyle(
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.W400,
+                                        color = Color.DarkGray
+                                    )
+                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(bottom = 15.dp)
+                                ) {
+                                    val colorEstado = if (selectedInventory?.activo == true)
+                                        Color(0xFF4CAF50)
+                                    else
+                                        Color(0xFFF44336)
+
+                                    Box(
+                                        modifier = Modifier
+                                            .size(16.dp)
+                                            .background(colorEstado, shape = CircleShape)
+                                            .border(
+                                                1.dp,
+                                                Color.DarkGray.copy(alpha = 0.4f),
+                                                CircleShape
+                                            )
+                                    )
+
+                                    Spacer(modifier = Modifier.width(8.dp))
+
+                                    Text(
+                                        text = if (selectedInventory?.activo == true) "Activo" else "Inactivo",
+                                        style = TextStyle(
+                                            fontSize = 22.sp,
+                                            fontWeight = FontWeight.W500,
+                                            color = Color.DarkGray
+                                        )
+                                    )
+                                }
+                            }
+
+
                         }
-
-
-
-
-
+                    } else {
+                        Text(
+                            text = "Selecciona un inventario para ver los detalles",
+                            textAlign = TextAlign.Center,
+                            color = Color.DarkGray,
+                            fontSize = 16.sp
+                        )
                     }
-                } else {
-                    Text(
-                        text = "Selecciona un inventario para ver los detalles",
-                        textAlign = TextAlign.Center,
-                        color = Color.DarkGray,
-                        fontSize = 16.sp
-                    )
                 }
             }
+
+            Spacer(modifier = Modifier.height(90.dp))
+
+
+
         }
-
-        Spacer(modifier = Modifier.height(90.dp))
-
         Button(
-            onClick = { },
+            onClick = {
+                try {
+                    if (Globals.inventory?.activo == true) {
+                        navController.navigate(Routes.Hoja_Inventario)
+                    } else {
+                        println("Inventario no activo o nulo")
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace() // Aquí puedes loguearlo o mostrar un mensaje al usuario
+                }
+            },
             modifier = Modifier
+                .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .padding(horizontal = 35.dp)
-                .height(52.dp),
-            shape = RoundedCornerShape(25.dp),
+                .padding(bottom = 0.dp)
+                .height(60.dp),
+            shape = RoundedCornerShape(
+                topStart = 10.dp,
+                topEnd = 10.dp,
+                bottomStart = 0.dp,
+                bottomEnd = 0.dp
+            ),
             elevation = ButtonDefaults.buttonElevation(
                 defaultElevation = 4.dp,
                 pressedElevation = 8.dp
             ),
             colors = ButtonDefaults.buttonColors(
-                VERD_FUER,
-                Color(0xFF3C3A3A)
+                containerColor = VERD_FUER,
+                contentColor = Color(0xFF3C3A3A)
             )
         ) {
             Text(
                 text = "Iniciar inventario",
                 style = TextStyle(fontSize = 21.sp),
                 fontWeight = FontWeight.Bold
-
             )
         }
 
 
     }
-}
 
+
+}
 @Preview(showBackground = true)
 @Composable
 fun PreviewInventory() {

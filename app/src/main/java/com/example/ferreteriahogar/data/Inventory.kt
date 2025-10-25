@@ -1,8 +1,8 @@
 package com.example.ferreteriahogar.data
 
-data class Inventory (
-    val codigo : String,
-    val nombre : String,
-    val funcionario : String,
-    var activo : Boolean
+data class Inventory(
+    val codigo: String? = null,
+    val nombre: String? = null,
+    val funcionario: String? = null,
+    var activo: Boolean? = null
 )

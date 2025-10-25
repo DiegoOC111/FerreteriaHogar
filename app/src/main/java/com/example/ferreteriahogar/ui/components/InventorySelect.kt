@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ferreteriahogar.R
+import com.example.ferreteriahogar.data.Globals
 import com.example.ferreteriahogar.data.Inventory
 import com.example.ferreteriahogar.data.inventories
 
@@ -103,9 +104,10 @@ fun InventorySelect(
                 ) {
                     inventarios.forEach { inventario ->
                         DropdownMenuItem(
-                            text = { Text(inventario.nombre) },
+                            text = { inventario.nombre?.let { Text(it) } },
                             onClick = {
                                 onInventorySelected(inventario)
+                                Globals.inventory = inventario
                                 expanded = false
                             },
 
