@@ -35,9 +35,6 @@ import com.example.ferreteriahogar.data.accounts
 import com.example.ferreteriahogar.utils.sha256
 
 @Composable
-
-
-
 fun Login(paddingValues: PaddingValues, navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -99,7 +96,7 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
                             color = colorResource(id = R.color.VERD_FUER),
                             shape = RoundedCornerShape(20.dp)
                         )
-                        .padding(vertical = 25.dp, horizontal = 16.dp),
+                        .padding(vertical = 55.dp, horizontal = 16.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -276,6 +273,7 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
             contentDescription = "Imagen de login",
             modifier = Modifier
                 .align(Alignment.BottomCenter)
+                .width(300.dp)
                 .height(200.dp)
                 .fillMaxWidth()
                 .padding(horizontal = 40.dp),

@@ -1,5 +1,6 @@
 package com.example.ferreteriahogar.ui.components
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.material3.TextButton
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,23 +27,36 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.ferreteriahogar.ui.Routes
+import com.example.ferreteriahogar.viewModels.InventoryViewModel
 
 
-
-@Composable
 @OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun NavBar2(
     navController: NavController,
-    titleNavBar: String,
-    onSendClick: () -> Unit // <-- función que se ejecuta al presionar Enviar
-) {
+    titleNavBar : String,
+    onSendClick: () -> Unit,
+    viewModel: InventoryViewModel
+    ){
+
+    BackHandler {
+        if (viewModel.detallesTemp.isNotEmpty()) {
+            viewModel.detallesTemp.clear()
+        }
+        navController.popBackStack()
+    }
+
     TopAppBar(
         modifier = Modifier.padding(horizontal = 10.dp),
 
         navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }) {
+            IconButton(onClick = {
+                viewModel.detallesTemp.clear()
+                navController.popBackStack()
+            }) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Volver",
@@ -57,7 +71,8 @@ fun NavBar2(
                 text = titleNavBar,
                 color = Color.Black,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().
+                padding(start = 26.dp),
                 textAlign = TextAlign.Center,
                 fontSize = 25.sp
             )
@@ -70,7 +85,7 @@ fun NavBar2(
                     text = "Enviar",
                     color = Color(0xFF007AFF),
                     fontWeight = FontWeight.Bold,
-                    style = TextStyle(fontSize = 16.sp)
+                    style = TextStyle(fontSize = 18.sp)
                 )
             }
         },

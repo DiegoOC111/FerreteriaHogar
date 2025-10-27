@@ -22,6 +22,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ferreteriahogar.viewModels.InventoryViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,10 +40,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-
-            // Contenedor raíz que aplica padding global por las barras del sistema
             Box(modifier = androidx.compose.ui.Modifier.padding(WindowInsets.systemBars.asPaddingValues())) {
-                NavHost(navController = navController, startDestination = Routes.Login) {
+                val viewModel: InventoryViewModel = viewModel()
+
+                NavHost(navController = navController, startDestination = Routes.Login ) {
                     composable(Routes.Login) {
                         Scaffold(Modifier.fillMaxSize()) { innerPadding ->
                             Login(paddingValues = innerPadding, navController)
@@ -56,12 +58,12 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Routes.Inventory) {
                         Scaffold(Modifier.fillMaxSize()) { innerPadding ->
-                            Inventory(paddingValues = innerPadding, navController)
+                            Inventory(paddingValues = innerPadding, navController, viewModel = viewModel)
                         }
                     }
                     composable(Routes.Hoja_Inventario) {
                         Scaffold(Modifier.fillMaxSize()) { innerPadding ->
-                            HojaInventario(paddingValues = innerPadding, navController)
+                            HojaInventario(paddingValues = innerPadding, navController, viewModel = viewModel)
                         }
                     }
                 }

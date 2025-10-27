@@ -10,6 +10,8 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,8 +22,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,10 +37,12 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.ferreteriahogar.R
 import com.example.ferreteriahogar.data.Detalle_Hoja
 import com.example.ferreteriahogar.ui.components.NavBar2
 import com.example.ferreteriahogar.ui.theme.VERD_FUER
 import com.example.ferreteriahogar.utils.leerProductos
+import com.example.ferreteriahogar.viewModels.InventoryViewModel
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.ExecutorService
@@ -45,12 +52,13 @@ import java.util.concurrent.Executors
 @Composable
 fun HojaInventario(
     paddingValues: PaddingValues,
-    navController: NavController
+    navController: NavController,
+    viewModel: InventoryViewModel
 ) {
     val context = LocalContext.current
     val titleNavBar = "Inventario"
 
-    val detalles = remember { mutableStateListOf<Detalle_Hoja>() }
+    val detalles = viewModel.detallesTemp
     var showEditDialog by remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableStateOf(-1) }
     var cantidadEdit by remember { mutableStateOf("") }
@@ -64,14 +72,31 @@ fun HojaInventario(
 
     val productos = remember { leerProductos(context) }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(
+            brush = Brush.verticalGradient(
+                colors = listOf(
+                    Color.White,
+                    colorResource(id = R.color.VERD_FONDO)
+                )
+            )
+        )) {
 
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            NavBar2(navController, titleNavBar) { println("Botón Enviar presionado") }
+            NavBar2(
+                navController = navController,
+                titleNavBar = titleNavBar,
+                onSendClick = {
+                    viewModel.applyChanges()
+                    navController.popBackStack()
+                },
+                viewModel = viewModel
+            )
 
             Spacer(Modifier.height(40.dp))
 
@@ -86,11 +111,13 @@ fun HojaInventario(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(400.dp)
+                        .height(550.dp)
                         .padding(16.dp)
                 ) {
                     if (detalles.isNotEmpty()) {
-                        LazyColumn {
+                        LazyColumn (
+                            modifier = Modifier.animateContentSize()
+                        ){
                             itemsIndexed(detalles) { index, item ->
                                 Card(
                                     modifier = Modifier
@@ -143,7 +170,7 @@ fun HojaInventario(
             MLKitCameraPreview(
                 onBarcodeDetected = { codigo ->
                     val encontrado = productos.find { it.codigo == codigo }
-                    detalles.add(
+                    viewModel.addProduct(
                         Detalle_Hoja(
                             codigo = encontrado?.codigo ?: codigo,
                             descripcion = encontrado?.descripcion ?: "Descripción",
@@ -171,7 +198,7 @@ fun HojaInventario(
                 },
                 dismissButton = {
                     Button(onClick = {
-                        detalles.removeAt(selectedIndex)
+                        viewModel.removeTemp(selectedIndex)
                         showOptionsDialog = false
                     }) {
                         Text("Eliminar")
@@ -192,8 +219,7 @@ fun HojaInventario(
                 onCantidadChange = { cantidadEdit = it },
                 onGuardar = {
                     cantidadEdit.toIntOrNull()?.let { newCantidad ->
-                        val oldItem = detalles[selectedIndex]
-                        detalles[selectedIndex] = oldItem.copy(cantidad = newCantidad)
+                        viewModel.updateCantidadTemp(selectedIndex, newCantidad)
                     }
                     showEditDialog = false
                 },
@@ -220,11 +246,20 @@ fun HojaInventario(
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .padding(bottom = 0.dp)
-                .height(100.dp),
-            shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
+                .height(60.dp),
+            shape = RoundedCornerShape(
+                topStart = 10.dp,
+                topEnd = 10.dp,
+                bottomStart = 0.dp,
+                bottomEnd = 0.dp
+            ),
+            elevation = ButtonDefaults.buttonElevation(
+                defaultElevation = 4.dp,
+                pressedElevation = 8.dp
+            ),
             colors = ButtonDefaults.buttonColors(
                 containerColor = VERD_FUER,
-                contentColor = androidx.compose.ui.graphics.Color.White
+                contentColor = Color(0xFF3C3A3A)
             )
         ) {
             Text(
@@ -336,8 +371,3 @@ fun EditCantidadDialog(
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun PreviewHoja() {
-    HojaInventario(PaddingValues(), rememberNavController())
-}

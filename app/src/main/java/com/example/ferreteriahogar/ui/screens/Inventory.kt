@@ -49,11 +49,11 @@ import com.example.ferreteriahogar.ui.components.InventorySelect
 import com.example.ferreteriahogar.ui.components.NavBar
 import com.example.ferreteriahogar.ui.theme.VERD_FUER
 import com.example.ferreteriahogar.ui.theme.VERD_MEDIO
+import com.example.ferreteriahogar.viewModels.InventoryViewModel
 
 @Composable
-fun Inventory(paddingValues: PaddingValues, navController: NavController) {
+fun Inventory(paddingValues: PaddingValues, navController: NavController, viewModel: InventoryViewModel) {
     val titleNavBar = "Inventario"
-    var selectedInventory by remember { mutableStateOf<Inventory?>(null) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -95,8 +95,10 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController) {
             )
 
             InventorySelect(
-                selectedInventory = selectedInventory,
-                onInventorySelected = { selectedInventory = it })
+                selectedInventory = viewModel.selectedInventory.value,
+                onInventorySelected = {
+                    viewModel.selectInventory(it)
+                })
 
             Spacer(Modifier.height(40.dp))
 
@@ -131,7 +133,7 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController) {
                         .padding(vertical = 25.dp, horizontal = 16.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (selectedInventory != null) {
+                    if (viewModel.selectedInventory.value != null){
                         Column(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.Start
@@ -148,7 +150,7 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController) {
                                     )
                                 )
                                 Text(
-                                    text = "${selectedInventory!!.codigo}",
+                                    text = "${viewModel.selectedInventory.value!!.codigo}",
                                     modifier = Modifier.padding(bottom = 15.dp),
                                     style = TextStyle(
                                         fontSize = 22.sp,
@@ -169,7 +171,7 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController) {
                                     )
                                 )
                                 Text(
-                                    text = "${selectedInventory!!.nombre}",
+                                    text = "${viewModel.selectedInventory.value!!.nombre}",
                                     modifier = Modifier.padding(bottom = 15.dp),
                                     style = TextStyle(
                                         fontSize = 22.sp,
@@ -190,7 +192,7 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController) {
                                     )
                                 )
                                 Text(
-                                    text = "${selectedInventory!!.funcionario}",
+                                    text = "${viewModel.selectedInventory.value!!.funcionario}",
                                     modifier = Modifier.padding(bottom = 15.dp),
                                     style = TextStyle(
                                         fontSize = 22.sp,
@@ -213,7 +215,7 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController) {
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.padding(bottom = 15.dp)
                                 ) {
-                                    val colorEstado = if (selectedInventory?.activo == true)
+                                    val colorEstado = if (viewModel.selectedInventory.value!!.activo == true)
                                         Color(0xFF4CAF50)
                                     else
                                         Color(0xFFF44336)
@@ -232,7 +234,7 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController) {
                                     Spacer(modifier = Modifier.width(8.dp))
 
                                     Text(
-                                        text = if (selectedInventory?.activo == true) "Activo" else "Inactivo",
+                                        text = if (viewModel.selectedInventory.value!!.activo == true) "Activo" else "Inactivo",
                                         style = TextStyle(
                                             fontSize = 22.sp,
                                             fontWeight = FontWeight.W500,
@@ -240,6 +242,27 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController) {
                                         )
                                     )
                                 }
+                            }
+                            Column {
+                                Text(
+                                    text = "CANT. PRODUCTOS:",
+                                    modifier = Modifier.padding(bottom = 0.dp),
+                                    style = TextStyle(
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.W400,
+                                        color = Color.DarkGray
+                                    )
+                                )
+                                Text(
+                                    text = "${viewModel.selectedInventory.value?.cantProd ?: 0}",
+                                    modifier = Modifier.padding(bottom = 15.dp),
+                                    style = TextStyle(
+                                        fontSize = 22.sp,
+                                        fontWeight = FontWeight.W500,
+                                        color = Color.DarkGray
+                                    )
+                                )
+
                             }
 
 
@@ -263,13 +286,11 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController) {
         Button(
             onClick = {
                 try {
-                    if (Globals.inventory?.activo == true) {
+                    if (viewModel.selectedInventory.value?.activo == true) {
                         navController.navigate(Routes.Hoja_Inventario)
-                    } else {
-                        println("Inventario no activo o nulo")
                     }
                 } catch (e: Exception) {
-                    e.printStackTrace() // Aquí puedes loguearlo o mostrar un mensaje al usuario
+                    e.printStackTrace()
                 }
             },
             modifier = Modifier
@@ -303,12 +324,4 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController) {
     }
 
 
-}
-@Preview(showBackground = true)
-@Composable
-fun PreviewInventory() {
-    Inventory(
-        paddingValues = PaddingValues(),
-        navController = rememberNavController()
-    )
 }

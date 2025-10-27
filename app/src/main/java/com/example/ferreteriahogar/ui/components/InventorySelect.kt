@@ -41,7 +41,7 @@ import com.example.ferreteriahogar.data.inventories
 @Composable
 fun InventorySelect(
     selectedInventory: Inventory?,
-    onInventorySelected: (Inventory) -> Unit
+    onInventorySelected: (Inventory) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
