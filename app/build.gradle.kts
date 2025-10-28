@@ -83,4 +83,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.9.5")
 
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    implementation("androidx.compose.material:material-icons-extended:1.7.5")
+
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.34.0")
 }

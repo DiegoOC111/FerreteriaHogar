@@ -21,9 +21,12 @@ import com.example.ferreteriahogar.ui.theme.FerreteriaHogarTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ferreteriahogar.viewModels.InventoryViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +42,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
+            val systemUiController = rememberSystemUiController()
+            SideEffect {
+                systemUiController.setStatusBarColor(
+                    color = Color.Transparent,
+                    darkIcons = true
+                )
+            }
             val navController = rememberNavController()
             Box(modifier = androidx.compose.ui.Modifier.padding(WindowInsets.systemBars.asPaddingValues())) {
                 val viewModel: InventoryViewModel = viewModel()

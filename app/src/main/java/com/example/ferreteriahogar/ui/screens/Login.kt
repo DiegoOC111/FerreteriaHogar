@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material3.*
@@ -160,6 +162,21 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
                             },
                             visualTransformation = if (passwordVisible)
                                 VisualTransformation.None else PasswordVisualTransformation(),
+                            trailingIcon = @androidx.compose.runtime.Composable {
+                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                    if (passwordVisible) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Visibility,
+                                            contentDescription = "Ocultar contraseña"
+                                        )
+                                    } else {
+                                        Icon(
+                                            imageVector = Icons.Filled.VisibilityOff,
+                                            contentDescription = "Mostrar contraseña"
+                                        )
+                                    }
+                                }
+                            },
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier
                                 .fillMaxWidth()

@@ -12,6 +12,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -45,6 +46,7 @@ import com.example.ferreteriahogar.utils.leerProductos
 import com.example.ferreteriahogar.viewModels.InventoryViewModel
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -57,6 +59,8 @@ fun HojaInventario(
 ) {
     val context = LocalContext.current
     val titleNavBar = "Inventario"
+
+    val scope = rememberCoroutineScope()
 
     val detalles = viewModel.detallesTemp
     var showEditDialog by remember { mutableStateOf(false) }
@@ -164,22 +168,57 @@ fun HojaInventario(
 
             Spacer(modifier = Modifier.height(16.dp))
         }
+        var puedeLeer by remember { mutableStateOf(true) }
+        var mensajeError by remember { mutableStateOf<String?>(null) }
 
         // Cámara ML Kit
         if (showScanner) {
             MLKitCameraPreview(
                 onBarcodeDetected = { codigo ->
-                    val encontrado = productos.find { it.codigo == codigo }
-                    viewModel.addProduct(
-                        Detalle_Hoja(
-                            codigo = encontrado?.codigo ?: codigo,
-                            descripcion = encontrado?.descripcion ?: "Descripción",
-                            cantidad = 1
+
+                    if (!puedeLeer) return@MLKitCameraPreview
+                    puedeLeer = false
+
+                    val code = codigo.trim()
+                    val encontrado = productos.find { it.codigo == code }
+                    if (encontrado != null){
+                        viewModel.addProduct(
+                            Detalle_Hoja(
+                                codigo = encontrado.codigo,
+                                descripcion = encontrado.descripcion,
+                                cantidad = 1
+                            )
                         )
-                    )
-                    showScanner = false
+                        showScanner = false
+                    } else {
+                        mensajeError = "Producto no encontrado en la BD"
+                    }
+
+                    scope.launch {
+                        kotlinx.coroutines.delay(1000)
+                        puedeLeer = true
+                        mensajeError = null
+                    }
                 }
             )
+
+            mensajeError?.let {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 80.dp)
+                ) {
+                    Text(
+                        text = it,
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        modifier = Modifier
+                            .background(Color.Red.copy(alpha = 0.8f), RoundedCornerShape(10.dp))
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                    )
+                }
+            }
+
         }
 
         // Diálogo de opciones (Actualizar / Eliminar)
@@ -290,12 +329,7 @@ fun MLKitCameraPreview(onBarcodeDetected: (String) -> Unit) {
             }
 
             val imageAnalyzer = ImageAnalysis.Builder().build().also { analysis ->
-                var detected = false
                 analysis.setAnalyzer(cameraExecutor) { imageProxy: ImageProxy ->
-                    if (detected) {
-                        imageProxy.close()
-                        return@setAnalyzer
-                    }
                     val mediaImage = imageProxy.image
                     if (mediaImage != null) {
                         val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
@@ -304,13 +338,14 @@ fun MLKitCameraPreview(onBarcodeDetected: (String) -> Unit) {
                                 for (barcode in barcodes) {
                                     val code = barcode.rawValue
                                     if (!code.isNullOrEmpty()) {
-                                        detected = true
                                         onBarcodeDetected(code)
                                     }
                                 }
                             }
                             .addOnCompleteListener { imageProxy.close() }
-                    } else imageProxy.close()
+                    } else {
+                        imageProxy.close()
+                    }
                 }
             }
 
