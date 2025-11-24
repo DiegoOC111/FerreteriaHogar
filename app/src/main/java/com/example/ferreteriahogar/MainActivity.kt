@@ -59,11 +59,46 @@ class MainActivity : ComponentActivity() {
                             Login(paddingValues = innerPadding, navController)
                         }
                     }
-                    composable(Routes.MainMenu + "/{user}" + "/{passwordHashed}") {
-                        val user = it.arguments?.getString("user")
-                        val passwordHashed = it.arguments?.getString("passwordHashed")
+                    composable(Routes.MainMenu  ) {
+
                         Scaffold(Modifier.fillMaxSize()) { innerPadding ->
-                            MainMenu(paddingValues = innerPadding, user ?: "Error", passwordHashed ?: "No", navController)
+                            MainMenu(paddingValues = innerPadding, navController)
+                        }
+                    }
+                    composable(Routes.AdminScreen) {
+                        Scaffold(Modifier.fillMaxSize()) { innerPadding ->
+                            AdminScreen(
+                                paddingValues = innerPadding,
+                                navController = navController
+                            )
+                        }
+                    }
+
+                    composable(Routes.AdminUsuarios) {
+                        Scaffold(Modifier.fillMaxSize()) { innerPadding ->
+                            AdminUsuariosScreen(
+                                paddingValues = innerPadding,
+                                navController = navController,
+                                context = this@MainActivity // o el contexto correcto
+                            )
+                        }
+                    }
+                    composable(Routes.AdminInventariosScreen) {
+                        Scaffold(Modifier.fillMaxSize()) { innerPadding ->
+                            AdminInventariosScreen(
+                                paddingValues = innerPadding,
+                                navController = navController,
+                                context = this@MainActivity // o el contexto correcto
+                            )
+                        }
+                    }
+                    composable(Routes.AdminProductos) {
+                        Scaffold(Modifier.fillMaxSize()) { innerPadding ->
+                            ProductADScreen(
+                                paddingValues = innerPadding,
+                                navController = navController,
+                                context = this@MainActivity // o el contexto correcto
+                            )
                         }
                     }
                     composable(Routes.Inventory) {

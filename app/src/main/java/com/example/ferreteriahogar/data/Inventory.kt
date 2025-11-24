@@ -1,9 +1,8 @@
 package com.example.ferreteriahogar.data
-
 data class Inventory(
-    val codigo: String? = null,
-    val nombre: String? = null,
-    val funcionario: String? = null,
-    var activo: Boolean? = null,
-    var cantProd: Int? = null
+    val code: String = "",
+    val name: String = "",
+    val status: String = "",
+    val user: User,
+    val items: List<InventoryProduct>
 )

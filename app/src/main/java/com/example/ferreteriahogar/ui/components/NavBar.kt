@@ -36,7 +36,7 @@ fun OverflowMenu(
     onItemClick :(String)-> Unit,
     onDismiss :()->Unit
 ){
-    val opciones=listOf("Vision","Mision","Ajustes")
+    val opciones=listOf("Popeame un chiste","Cerrar Sesion")
     DropdownMenu(expanded = isExpanded, onDismissRequest = onDismiss, containerColor = Color.White) {
         opciones.forEach {opcion->
             DropdownMenuItem(text={
@@ -95,9 +95,8 @@ fun NavBar(navController: NavController,
                 isExpanded = isMenuOpened,
                 onItemClick = { opcion ->
                     when (opcion) {
-                        "Misión" -> println()
-                        "Visión" -> println()
-                        "Ajustes" -> println()
+                        "Popeame un chiste" -> println()
+                        "Cerrar Sesion" -> navController.navigate(Routes.Login)
                     }
                     isMenuOpened = false
                 },

@@ -1,6 +1,6 @@
 package com.example.ferreteriahogar.data
-
-data class User (
-    val user : String,
-    val password : String
+data class User(
+    val id: Long,
+    val username: String = "",
+    val role: String = ""
 )

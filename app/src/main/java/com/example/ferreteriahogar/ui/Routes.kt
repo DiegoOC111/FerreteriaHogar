@@ -8,5 +8,9 @@ object Routes {
     var Inventory = "inventory"
 
     var Hoja_Inventario = "hojainventario"
+    var AdminScreen = "adminscreen"
+    var AdminUsuarios = "adminusuariosscreen"
+    var AdminProductos = "productadscreen"
+    var AdminInventariosScreen = "admininventariosscreen"
 
 }

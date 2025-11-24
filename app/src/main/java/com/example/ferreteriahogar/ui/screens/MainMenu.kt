@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.ferreteriahogar.R
+import com.example.ferreteriahogar.data.Globals
+import com.example.ferreteriahogar.data.User
 import com.example.ferreteriahogar.ui.Routes
 import com.example.ferreteriahogar.ui.components.BackIconButton
 import com.example.ferreteriahogar.ui.components.NavBar
@@ -41,7 +43,7 @@ import com.example.ferreteriahogar.ui.theme.VERD_FUER
 import org.w3c.dom.Text
 
 @Composable
-fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : String , navController : NavController){
+fun MainMenu(paddingValues: PaddingValues,  navController : NavController){
     val titleNavBar = ""
 
     Box(
@@ -68,7 +70,7 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
 
         Spacer(Modifier.height(90.dp))
 
-        Text(text = "Bienvenido, $usuario!",
+        Text(text = "Bienvenido, ${Globals.ActiveUser?.username}!",
             style = TextStyle(
                 fontSize = 34.sp,
                 fontWeight = FontWeight.ExtraBold,
@@ -84,7 +86,14 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
 
         Button(
             onClick = {
-                navController.navigate(Routes.Inventory)
+                val user = Globals.ActiveUser
+                if (user != null) {
+                    if (user.role == "ADMIN") {
+                        navController.navigate(Routes.AdminScreen)
+                    } else {
+                        navController.navigate(Routes.Inventory)
+                    }
+                }
             },
             Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
             shape = RoundedCornerShape(25.dp),
@@ -96,24 +105,27 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
                 VERD_FUER,
                 Color(0xFF3C3A3A)
             )
-        ) {
+        ) {if (Globals.ActiveUser?.role == "ADMIN"){
+
+            Text(
+                text = "Centro de Administracion",
+                style = TextStyle(fontSize = 21.sp),
+                fontWeight = FontWeight.Bold
+            )
+
+
+        }else{
             Text(
                 text = "Centro de Inventario",
                 style = TextStyle(fontSize = 21.sp),
                 fontWeight = FontWeight.Bold
             )
         }
+
+        }
     }
 
-    println("Contraseña cifrada: $passwordHashed")
+
 }
-@Preview(showBackground = true)
-@Composable
-fun MAIN() {
-    MainMenu(
-        paddingValues = PaddingValues(),
-        usuario = "Villalobos",
-        passwordHashed = "abc123123abc",
-        navController = rememberNavController()
-    )
-}
+
+

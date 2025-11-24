@@ -44,13 +44,25 @@ android {
 dependencies {
     // ML Kit Barcode Scanning
     implementation("com.google.mlkit:barcode-scanning:17.3.0")
+    implementation(libs.androidx.constraintlayout.core)
+    implementation(libs.ui)
+    implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.foundation)
 
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 // CameraX para usar la cámara en Compose
     implementation("androidx.camera:camera-core:1.5.1")
     implementation("androidx.camera:camera-camera2:1.5.1")
     implementation("androidx.camera:camera-lifecycle:1.5.1")
     implementation("androidx.camera:camera-view:1.5.1")
     implementation("androidx.camera:camera-extensions:1.5.1")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 // Compose
     implementation("androidx.compose.ui:ui:1.5.0")
     implementation("androidx.compose.material3:material3:1.2.0")

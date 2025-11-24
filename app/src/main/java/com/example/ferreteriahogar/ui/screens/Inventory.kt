@@ -1,59 +1,42 @@
 package com.example.ferreteriahogar.ui.screens
 
-import android.widget.Space
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.ferreteriahogar.R
-import com.example.ferreteriahogar.data.Globals
-import com.example.ferreteriahogar.data.Inventory
 import com.example.ferreteriahogar.ui.Routes
-import com.example.ferreteriahogar.ui.components.BackIconButton
 import com.example.ferreteriahogar.ui.components.InventorySelect
 import com.example.ferreteriahogar.ui.components.NavBar
 import com.example.ferreteriahogar.ui.theme.VERD_FUER
-import com.example.ferreteriahogar.ui.theme.VERD_MEDIO
 import com.example.ferreteriahogar.viewModels.InventoryViewModel
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun Inventory(paddingValues: PaddingValues, navController: NavController, viewModel: InventoryViewModel) {
+fun Inventory(
+    paddingValues: PaddingValues,
+    navController: NavController,
+    viewModel: InventoryViewModel
+) {
+    val context = LocalContext.current
     val titleNavBar = "Inventario"
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -81,7 +64,6 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController, viewMo
         ) {
 
             NavBar(navController, titleNavBar)
-
             Spacer(Modifier.height(20.dp))
 
             Text(
@@ -94,11 +76,14 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController, viewMo
                 modifier = Modifier.padding(end = 240.dp, bottom = 6.dp)
             )
 
+            // InventorySelect ahora recibe context
             InventorySelect(
+                context = context,
                 selectedInventory = viewModel.selectedInventory.value,
                 onInventorySelected = {
                     viewModel.selectInventory(it)
-                })
+                }
+            )
 
             Spacer(Modifier.height(40.dp))
 
@@ -133,141 +118,36 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController, viewMo
                         .padding(vertical = 25.dp, horizontal = 16.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (viewModel.selectedInventory.value != null){
+                    viewModel.selectedInventory.value?.let { inv ->
                         Column(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.Start
                         ) {
+                            DetailRow(label = "ID:", value = inv.code)
+                            DetailRow(label = "NOMBRE:", value = inv.name)
+                            DetailRow(label = "FUNCIONARIO:", value = inv.user.username)
 
-                            Column {
-                                Text(
-                                    text = "ID:",
-                                    modifier = Modifier.padding(bottom = 0.dp),
-                                    style = TextStyle(
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.W400,
-                                        color = Color.DarkGray
-                                    )
+                            // Estado con color
+                            Row(verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(bottom = 15.dp)
+                            ) {
+                                val colorEstado = if (inv.status == "ACTIVE") Color(0xFF4CAF50) else Color(0xFFF44336)
+                                Box(
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .background(colorEstado, shape = CircleShape)
+                                        .border(1.dp, Color.DarkGray.copy(alpha = 0.4f), CircleShape)
                                 )
+                                Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = "${viewModel.selectedInventory.value!!.codigo}",
-                                    modifier = Modifier.padding(bottom = 15.dp),
-                                    style = TextStyle(
-                                        fontSize = 22.sp,
-                                        fontWeight = FontWeight.W500,
-                                        color = Color.DarkGray
-                                    )
-                                )
-                            }
-
-                            Column {
-                                Text(
-                                    text = "NOMBRE:",
-                                    modifier = Modifier.padding(bottom = 0.dp),
-                                    style = TextStyle(
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.W400,
-                                        color = Color.DarkGray
-                                    )
-                                )
-                                Text(
-                                    text = "${viewModel.selectedInventory.value!!.nombre}",
-                                    modifier = Modifier.padding(bottom = 15.dp),
-                                    style = TextStyle(
-                                        fontSize = 22.sp,
-                                        fontWeight = FontWeight.W500,
-                                        color = Color.DarkGray
-                                    )
+                                    text = if (inv.status == "ACTIVE") "Activo" else "Inactivo",
+                                    style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.W500, color = Color.DarkGray)
                                 )
                             }
-
-                            Column {
-                                Text(
-                                    text = "FUNCIONARIO:",
-                                    modifier = Modifier.padding(bottom = 0.dp),
-                                    style = TextStyle(
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.W400,
-                                        color = Color.DarkGray
-                                    )
-                                )
-                                Text(
-                                    text = "${viewModel.selectedInventory.value!!.funcionario}",
-                                    modifier = Modifier.padding(bottom = 15.dp),
-                                    style = TextStyle(
-                                        fontSize = 22.sp,
-                                        fontWeight = FontWeight.W500,
-                                        color = Color.DarkGray
-                                    )
-                                )
-                            }
-                            Column {
-                                Text(
-                                    text = "ESTADO:",
-                                    modifier = Modifier.padding(bottom = 0.dp),
-                                    style = TextStyle(
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.W400,
-                                        color = Color.DarkGray
-                                    )
-                                )
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.padding(bottom = 15.dp)
-                                ) {
-                                    val colorEstado = if (viewModel.selectedInventory.value!!.activo == true)
-                                        Color(0xFF4CAF50)
-                                    else
-                                        Color(0xFFF44336)
-
-                                    Box(
-                                        modifier = Modifier
-                                            .size(16.dp)
-                                            .background(colorEstado, shape = CircleShape)
-                                            .border(
-                                                1.dp,
-                                                Color.DarkGray.copy(alpha = 0.4f),
-                                                CircleShape
-                                            )
-                                    )
-
-                                    Spacer(modifier = Modifier.width(8.dp))
-
-                                    Text(
-                                        text = if (viewModel.selectedInventory.value!!.activo == true) "Activo" else "Inactivo",
-                                        style = TextStyle(
-                                            fontSize = 22.sp,
-                                            fontWeight = FontWeight.W500,
-                                            color = Color.DarkGray
-                                        )
-                                    )
-                                }
-                            }
-                            Column {
-                                Text(
-                                    text = "CANT. PRODUCTOS:",
-                                    modifier = Modifier.padding(bottom = 0.dp),
-                                    style = TextStyle(
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.W400,
-                                        color = Color.DarkGray
-                                    )
-                                )
-                                Text(
-                                    text = "${viewModel.selectedInventory.value?.cantProd ?: 0}",
-                                    modifier = Modifier.padding(bottom = 15.dp),
-                                    style = TextStyle(
-                                        fontSize = 22.sp,
-                                        fontWeight = FontWeight.W500,
-                                        color = Color.DarkGray
-                                    )
-                                )
-
-                            }
-
-
+                            val cantidadProductos = inv.items.sumOf { it.stock }
+                            DetailRow(label = "CANT. PRODUCTOS:", value = "${cantidadProductos ?: 0}")
                         }
-                    } else {
+                    } ?: run {
                         Text(
                             text = "Selecciona un inventario para ver los detalles",
                             textAlign = TextAlign.Center,
@@ -279,24 +159,17 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController, viewMo
             }
 
             Spacer(modifier = Modifier.height(90.dp))
-
-
-
         }
+
         Button(
             onClick = {
-                try {
-                    if (viewModel.selectedInventory.value?.activo == true) {
-                        navController.navigate(Routes.Hoja_Inventario)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                if (viewModel.selectedInventory.value?.status == "ACTIVE") {
+                    navController.navigate(Routes.Hoja_Inventario)
                 }
             },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .padding(bottom = 0.dp)
                 .height(60.dp),
             shape = RoundedCornerShape(
                 topStart = 10.dp,
@@ -304,24 +177,29 @@ fun Inventory(paddingValues: PaddingValues, navController: NavController, viewMo
                 bottomStart = 0.dp,
                 bottomEnd = 0.dp
             ),
-            elevation = ButtonDefaults.buttonElevation(
-                defaultElevation = 4.dp,
-                pressedElevation = 8.dp
-            ),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = VERD_FUER,
-                contentColor = Color(0xFF3C3A3A)
-            )
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp, pressedElevation = 8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = VERD_FUER, contentColor = Color(0xFF3C3A3A))
         ) {
             Text(
                 text = "Iniciar inventario",
-                style = TextStyle(fontSize = 21.sp),
-                fontWeight = FontWeight.Bold
+                style = TextStyle(fontSize = 21.sp, fontWeight = FontWeight.Bold)
             )
         }
-
-
     }
+}
 
-
+@Composable
+fun DetailRow(label: String, value: String?) {
+    Column {
+        Text(
+            text = label,
+            modifier = Modifier.padding(bottom = 0.dp),
+            style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.W400, color = Color.DarkGray)
+        )
+        Text(
+            text = value ?: "-",
+            modifier = Modifier.padding(bottom = 15.dp),
+            style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.W500, color = Color.DarkGray)
+        )
+    }
 }
