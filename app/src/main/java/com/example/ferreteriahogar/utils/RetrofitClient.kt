@@ -21,7 +21,7 @@ object RetrofitClient {
             .build()
 
         return Retrofit.Builder()
-            .baseUrl("http://http://ec2-50-17-165-201.compute-1.amazonaws.com:8081/") // cámbialo por tu host
+            .baseUrl("http://ec2-50-17-165-201.compute-1.amazonaws.com:8081/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

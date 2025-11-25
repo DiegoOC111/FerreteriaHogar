@@ -29,6 +29,12 @@ import com.example.ferreteriahogar.viewModels.InventoryViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class MainActivity : ComponentActivity() {
+    private val requestNotificationPermission =
+        registerForActivityResult(
+            androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+        ) { granted ->
+
+        }
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         var keepSplashOnScreen = true
@@ -40,6 +46,10 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            requestNotificationPermission.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        }
 
         setContent {
             val systemUiController = rememberSystemUiController()

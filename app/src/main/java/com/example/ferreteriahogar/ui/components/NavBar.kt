@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ferreteriahogar.ui.Routes
+import com.example.ferreteriahogar.utils.JokeHelper
 
 @Composable
 fun OverflowMenu(
@@ -95,7 +96,9 @@ fun NavBar(navController: NavController,
                 isExpanded = isMenuOpened,
                 onItemClick = { opcion ->
                     when (opcion) {
-                        "Popeame un chiste" -> println()
+                        "Popeame un chiste" -> {
+                            JokeHelper.fetchAndNotifyJoke(context = navController.context)
+                        }
                         "Cerrar Sesion" -> navController.navigate(Routes.Login)
                     }
                     isMenuOpened = false
