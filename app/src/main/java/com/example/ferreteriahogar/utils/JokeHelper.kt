@@ -7,7 +7,7 @@ import kotlinx.coroutines.launch
 
 object JokeHelper {
     fun fetchAndNotifyJoke(context: Context) {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).launch @androidx.annotation.RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS) {
             try {
                 val joke = JokeRetrofitClient.api.getJoke()
 

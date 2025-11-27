@@ -9,7 +9,9 @@ plugins {
 android {
     namespace = "com.example.ferreteriahogar"
     compileSdk = 36
-
+    tasks.withType<Test>().configureEach {
+        useJUnitPlatform()
+    }
     defaultConfig {
         applicationId = "com.example.ferreteriahogar"
         minSdk = 24
@@ -49,7 +51,9 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.foundation)
-
+    testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
+    testImplementation("io.kotest:kotest-assertions-core:5.9.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 // CameraX para usar la cámara en Compose
