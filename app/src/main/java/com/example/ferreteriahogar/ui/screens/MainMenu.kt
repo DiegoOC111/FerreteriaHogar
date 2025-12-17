@@ -88,7 +88,7 @@ fun MainMenu(paddingValues: PaddingValues,  navController : NavController){
             onClick = {
                 val user = Globals.ActiveUser
                 if (user != null) {
-                    if (user.role == "ADMIN") {
+                    if (user.role != "USER") {
                         navController.navigate(Routes.AdminScreen)
                     } else {
                         navController.navigate(Routes.Inventory)

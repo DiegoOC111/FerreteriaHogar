@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.ferreteriahogar.R
+import com.example.ferreteriahogar.data.Globals
 import com.example.ferreteriahogar.ui.Routes
 import com.example.ferreteriahogar.ui.components.NavBar
 import com.example.ferreteriahogar.ui.theme.VERD_FUER
@@ -39,7 +40,8 @@ fun AdminScreen(
     navController: NavController
 ) {
     val titleNavBar = ""
-
+    val user = Globals.ActiveUser
+    val userRole = user?.role ?: ""
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -72,32 +74,41 @@ fun AdminScreen(
         )
 
         Spacer(Modifier.height(30.dp))
-
-        // Botones de navegación a CRUD
         Button(
             onClick = { navController.navigate(Routes.AdminUsuarios) },
+            enabled = userRole == "UADMIN" || userRole == "ADMIN",
             modifier = Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
             shape = RoundedCornerShape(25.dp),
-            colors = ButtonDefaults.buttonColors(VERD_FUER)
-        ) { Text("Administrar Usuarios", fontSize = 21.sp, fontWeight = FontWeight.Bold) }
+            colors = ButtonDefaults.buttonColors(containerColor = VERD_FUER)
+        ) {
+            Text("Administrar Usuarios", fontSize = 21.sp, fontWeight = FontWeight.Bold)
+        }
 
         Spacer(Modifier.height(20.dp))
 
+        // BOTÓN PRODUCTOS: Habilitado solo para "ADMIN"
         Button(
             onClick = { navController.navigate(Routes.AdminProductos) },
+            enabled = userRole == "ADMIN",
             modifier = Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
             shape = RoundedCornerShape(25.dp),
-            colors = ButtonDefaults.buttonColors(VERD_FUER)
-        ) { Text("Administrar Productos", fontSize = 21.sp, fontWeight = FontWeight.Bold) }
+            colors = ButtonDefaults.buttonColors(containerColor = VERD_FUER)
+        ) {
+            Text("Administrar Productos", fontSize = 21.sp, fontWeight = FontWeight.Bold)
+        }
 
         Spacer(Modifier.height(20.dp))
 
+        // BOTÓN INVENTARIO: Habilitado para "IADMIN" y "ADMIN"
         Button(
             onClick = { navController.navigate(Routes.AdminInventariosScreen) },
+            enabled = userRole == "IADMIN" || userRole == "ADMIN",
             modifier = Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
             shape = RoundedCornerShape(25.dp),
-            colors = ButtonDefaults.buttonColors(VERD_FUER)
-        ) { Text("Administrar Inventario", fontSize = 21.sp, fontWeight = FontWeight.Bold) }
+            colors = ButtonDefaults.buttonColors(containerColor = VERD_FUER)
+        ) {
+            Text("Administrar Inventario", fontSize = 21.sp, fontWeight = FontWeight.Bold)
+        }
     }
 }
 
