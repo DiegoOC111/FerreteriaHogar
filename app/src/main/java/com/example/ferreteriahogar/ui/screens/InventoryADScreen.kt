@@ -129,17 +129,20 @@ fun AdminInventariosScreen(
                     } ?: InventoryAD(),
                     onDismiss = { editing = null; isNew = false },
                     onConfirm = { dto ->
+                        // 1. Capturamos si era nuevo O NO antes de limpiar el estado
+                        val creatingNew = isNew
 
+                        // 2. Ahora sí limpiamos la UI (cierra el diálogo)
                         editing = null
                         isNew = false
 
                         scope.launch {
                             try {
                                 isLoading = true
-
                                 val inventory = dto
 
-                                if (isNew) {
+                                // 3. Usamos la variable capturada 'creatingNew'
+                                if (creatingNew) {
                                     api.createInventory(inventory)
                                 } else {
                                     api.updateInventory(inventory)
