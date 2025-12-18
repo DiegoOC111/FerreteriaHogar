@@ -1,9 +1,10 @@
 package com.example.ferreteriahogar.ui.screens
 
-
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState // Importante para el scroll
+import androidx.compose.foundation.verticalScroll // Importante para el scroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
@@ -17,7 +18,6 @@ import androidx.navigation.NavController
 import com.example.ferreteriahogar.R
 import com.example.ferreteriahogar.data.Inventory
 import com.example.ferreteriahogar.data.InventoryAD
-import com.example.ferreteriahogar.data.toInventory
 import com.example.ferreteriahogar.ui.components.InventoryADDialog
 import com.example.ferreteriahogar.ui.components.InventoryTable
 import com.example.ferreteriahogar.ui.components.NavBar
@@ -40,7 +40,10 @@ fun AdminInventariosScreen(
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
-    // cargar inventarios
+    // Scroll state para la lista
+    val scrollState = rememberScrollState()
+
+    // Cargar inventarios al inicio
     LaunchedEffect(Unit) {
         try {
             isLoading = true
@@ -70,49 +73,41 @@ fun AdminInventariosScreen(
 
                 NavBar(navController, titleNavBar)
 
-                InventoryTable(
-                    inventories = inventories,
-                    onEdit = {
-                        editing = it
-                        isNew = false
-                    },
-                    onDelete = { inv ->
-                        scope.launch {
-                            try {
-                                isLoading = true
-                                api.deleteInventory(inv.code)
-                                inventories = inventories.filter { i -> i.code != inv.code }
-                            } catch (e: Exception) {
-                                errorMessage = "Error al eliminar"
-                            }
-                            isLoading = false
-                        }
-                    },
-                    onAdd = {
-                        editing = null
-                        isNew = true
-                    }
-                )
-
-                Spacer(Modifier.weight(1f))
-
-                // Botón agregar
-                Button(
-                    onClick = {
-                        editing = null
-                        isNew = true
-                    },
+                // --- ZONA DE SCROLL ---
+                // Usamos weight(1f) para que ocupe todo el espacio disponible
+                // y verticalScroll para permitir deslizar si la tabla es muy larga.
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(id = R.color.VERD_FUER)
-                    )
+                        .weight(1f)
+                        .verticalScroll(scrollState)
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                    Spacer(Modifier.width(8.dp))
-                    Text("Agregar +")
+                    InventoryTable(
+                        inventories = inventories,
+                        onEdit = {
+                            editing = it
+                            isNew = false
+                        },
+                        onDelete = { inv ->
+                            scope.launch {
+                                try {
+                                    isLoading = true
+                                    api.deleteInventory(inv.code)
+                                    // Actualizamos la lista localmente
+                                    inventories = inventories.filter { i -> i.code != inv.code }
+                                } catch (e: Exception) {
+                                    errorMessage = "Error al eliminar"
+                                }
+                                isLoading = false
+                            }
+                        },
+                        onAdd = {
+                            editing = null
+                            isNew = true
+                        }
+                    )
                 }
+
+
             }
 
             // DIALOGO
@@ -129,10 +124,12 @@ fun AdminInventariosScreen(
                     } ?: InventoryAD(),
                     onDismiss = { editing = null; isNew = false },
                     onConfirm = { dto ->
-                        // 1. Capturamos si era nuevo O NO antes de limpiar el estado
+
+                        // CORRECCIÓN LÓGICA:
+                        // 1. Guardamos el estado "es nuevo" en una variable temporal
                         val creatingNew = isNew
 
-                        // 2. Ahora sí limpiamos la UI (cierra el diálogo)
+                        // 2. Limpiamos el estado de la UI
                         editing = null
                         isNew = false
 
@@ -141,13 +138,14 @@ fun AdminInventariosScreen(
                                 isLoading = true
                                 val inventory = dto
 
-                                // 3. Usamos la variable capturada 'creatingNew'
+                                // 3. Usamos la variable temporal para decidir
                                 if (creatingNew) {
                                     api.createInventory(inventory)
                                 } else {
                                     api.updateInventory(inventory)
                                 }
 
+                                // Recargamos la lista
                                 inventories = api.getInventories()
                             } catch (e: Exception) {
                                 errorMessage = "Error al guardar: " + e.message
